@@ -1,0 +1,55 @@
+openapi: 3.0.1
+
+info:
+  title: example
+  version: ""
+  contact:
+    name: dalei
+    email: guoyunlei@live.com
+  description: |
+    example of openapi3.0.1 yaml file for test
+
+externalDocs:
+  description: github
+  url: https://github.com/daleione/swager
+
+security: []
+
+tags:
+  - name: hello
+    description: say hello for visitors
+
+paths:
+  /greet:
+    get:
+      tags:
+        - hello
+      summary:  say hello
+      description: | 
+          will print hello world
+      operationId: greet
+      parameters:
+        - name: user
+          description: user name
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: |
+              return hello world
+          content:
+            application/json:
+              schema:
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+                    description: content of return
+              examples:
+                success:
+                  value: {
+                    "message": "hello world, dalei!",
+                    }

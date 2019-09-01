@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+        <title>Swagger UI</title>
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Source+Code+Pro:300,600|Titillium+Web:400,600,700" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="./swagger-ui.css" >
+        <link rel="icon" type="image/png" href="./favicon-32x32.png" sizes="32x32" />
+        <link rel="icon" type="image/png" href="./favicon-16x16.png" sizes="16x16" />
+        <style>
+         html
+         {
+             box-sizing: border-box;
+             overflow: -moz-scrollbars-vertical;
+             overflow-y: scroll;
+         }
+
+         *,
+         *:before,
+         *:after
+         {
+             box-sizing: inherit;
+         }
+
+         body
+         {
+             margin:0;
+             background: #fafafa;
+         }
+         #h{
+             background: #4c88d6;
+             color: #fafafa;
+         }
+         #topbar-editor {
+             margin-left: 40px;
+             margin-right: 40px;
+         }
+        </style>
+    </head>
+
+    <body>
+        <div id="swagger-ui"></div>
+
+        <script src="./swagger-ui-bundle.js"> </script>
+        <script src="./swagger-ui-standalone-preset.js"> </script>
+        <script>
+            function getSelectedFile() {
+                var sel = document.getElementById('select');
+                var opt;
+                for ( var i = 0, len = sel.options.length; i < len; i++ ) {
+                    opt = sel.options[i];
+                    if ( opt.selected === true ) {
+                        break;
+                    }
+                }
+                console.log(opt.value);
+                return '/swagger-editor/editor.html?file=' + opt.value.substr(2);
+            }
+
+            function jumpEditor() {
+                window.location.href = getSelectedFile();
+            }
+
+            function addRow() {
+                const editor_div = document.createElement('div');
+                editor_div.className = 'row';
+                editor_div.innerHTML = `<div id="topbar-editor"><a href='##' onclick="jumpEditor()">Editor</a></div>`;
+                document.getElementsByClassName('topbar-wrapper')[0].appendChild(editor_div);
+            }
+            window.onload = function() {
+
+                const ui = SwaggerUIBundle({
+                    urls: [
+                        {name: "example",  url: "1234567../openapi/example.yaml"},
+                    ],
+                    "urls.primaryName": "example",  // default spec
+                    "defaultModelRendering": "model",
+                    dom_id: '#swagger-ui',
+                    deepLinking: true,
+                    presets: [
+                        SwaggerUIBundle.presets.apis,
+                        SwaggerUIStandalonePreset
+                    ],
+                    plugins: [
+                        SwaggerUIBundle.plugins.DownloadUrl
+                    ],
+                    layout: "StandaloneLayout",
+                    requestInterceptor: function() {
+                        this.url = '/proxy/'+ this.url.substr(7);
+                        return this;
+                    }
+                })
+
+                window.ui = ui
+                addRow()
+            }
+        </script>
+    </body>
+</html>
